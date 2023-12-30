@@ -26,7 +26,6 @@ const enemy = {
 const bullets = [];
 const bulletSpeed = 13;
 const bulletSize = 5;
-console.log(bullets)
 
 
 const updateEnemyPosition = () => {
@@ -97,7 +96,6 @@ const shootBullet = (x, y, targetX, targetY) => {
 
     const velocityX = bulletSpeed * (dx / distance);
     const velocityY = bulletSpeed * (dy / distance);
-    console.log(distance,velocityX,velocityY)
 
     bullets.push({ x, y, velocityX, velocityY });
 }
@@ -152,7 +150,6 @@ canvas.addEventListener('mousemove', (e)=> {
 });
 
 canvas.addEventListener('click', (e) =>{
-console.log('aa')
     shootBullet(player.x, player.y, enemy.x, enemy.y);
 });
 

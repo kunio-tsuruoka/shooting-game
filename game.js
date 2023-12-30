@@ -22,11 +22,24 @@ const enemy = {
     maxStopTime: 60, 
     maxAccelerateTime: 30, 
     isStopping: false ,
+    isCharging: false,
+    chargeSpeed: 10,
 };
 const bullets = [];
 const bulletSpeed = 13;
 const bulletSize = 5;
+const TELEPORT_MARGIN = 20; 
+const TELEPORT_DISTANCE = 30; // プレイヤーからの距離で瞬間移動をトリガーする
 
+const teleportAndCharging = () => {
+    // プレイヤーの近くに瞬間移動するぜ
+    enemy.x = player.x;
+    enemy.y = player.y;
+
+    // 走るぜ
+    enemy.isCharging = true;
+    enemy.accelerateTime = enemy.maxAccelerateTime;
+};
 
 const updateEnemyPosition = () => {
     if (isGameOver) return;
@@ -36,7 +49,15 @@ const updateEnemyPosition = () => {
         updateEnemyMove();
     }
     checkAndInitiateStopping();
+    checkAndInitiateTeleportingAndCharging();
+   
 };
+const checkAndInitiateTeleportingAndCharging = () => {
+    const distance = calculateDistance(player.x - enemy.x, player.y - enemy.y);
+    if (!enemy.isStopping && distance < TELEPORT_DISTANCE && !enemy.isCharging) {
+        teleportAndCharging();
+    }
+}
 
 const updateEnemyStop = () => {
     enemy.stopTime--;

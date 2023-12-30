@@ -31,11 +31,14 @@ const bulletSize = 5;
 const TELEPORT_MARGIN = 20; 
 const TELEPORT_DISTANCE = 30; // プレイヤーからの距離で瞬間移動をトリガーする
 
-const teleportAndCharging = () => {
+const teleportAndCharge = () => {
     // プレイヤーの近くに瞬間移動するぜ
     enemy.x = player.x;
     enemy.y = player.y;
 
+  // 画面外に出ないように調整
+    targetX = Math.max(TELEPORT_MARGIN, Math.min(canvas.width - TELEPORT_MARGIN, targetX));
+    targetY = Math.max(TELEPORT_MARGIN, Math.min(canvas.height - TELEPORT_MARGIN, targetY));
     // 走るぜ
     enemy.isCharging = true;
     enemy.accelerateTime = enemy.maxAccelerateTime;
@@ -55,7 +58,7 @@ const updateEnemyPosition = () => {
 const checkAndInitiateTeleportingAndCharging = () => {
     const distance = calculateDistance(player.x - enemy.x, player.y - enemy.y);
     if (!enemy.isStopping && distance < TELEPORT_DISTANCE && !enemy.isCharging) {
-        teleportAndCharging();
+        teleportAndCharge();
     }
 }
 

@@ -29,38 +29,49 @@ const bulletSize = 5;
 console.log(bullets)
 
 
-const updateEnemyPosition =()=> {
-
-    if(isGameOver) return
+const updateEnemyPosition = () => {
+    if (isGameOver) return;
     if (enemy.isStopping) {
-        enemy.stopTime--;
-        if (enemy.stopTime <= 0) {
-            enemy.isStopping = false;
-            enemy.accelerateTime = enemy.maxAccelerateTime;
-        }
+        updateEnemyStop();
     } else {
-        const dx = player.x - enemy.x;
-        const dy = player.y - enemy.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        let moveSpeed = enemy.speed;
-
- 
-        if (enemy.accelerateTime > 0) {
-            moveSpeed *= 3; 
-            enemy.accelerateTime--;
-        }
-
-        const moveX = moveSpeed * (dx / distance);
-        const moveY = moveSpeed * (dy / distance);
-
-        if (distance > enemy.size + player.size) {
-            enemy.x += moveX;
-            enemy.y += moveY;
-        }
+        updateEnemyMove();
     }
+    checkAndInitiateStopping();
+};
 
+const updateEnemyStop = () => {
+    enemy.stopTime--;
+    if (enemy.stopTime <= 0) {
+        enemy.isStopping = false;
+        enemy.accelerateTime = enemy.maxAccelerateTime;
+    }
+}
 
-    if (!enemy.isStopping && Math.random() < 0.01) { 
+const updateEnemyMove = () => {
+    const dx = player.x - enemy.x;
+    const dy = player.y - enemy.y;
+    const distance = calculateDistance(dx, dy);
+    let moveSpeed = calculateMoveSpeed(distance);
+
+    enemy.x += moveSpeed * (dx / distance);
+    enemy.y += moveSpeed * (dy / distance);
+}
+
+const calculateDistance = (dx, dy) => Math.sqrt(dx * dx + dy * dy);
+
+const calculateMoveSpeed = (distance) => {
+    let moveSpeed = enemy.speed;
+    if (enemy.accelerateTime > 0) {
+        const ACCELERATION_FACTOR = 3;
+        moveSpeed *= ACCELERATION_FACTOR;
+        enemy.accelerateTime--;
+    }
+    return distance > (enemy.size + player.size) ? moveSpeed : 0;
+}
+
+const checkAndInitiateStopping = () => {
+    const STOP_CHANCE = 0.01;
+    if (!enemy.isStopping && Math.random() < STOP_CHANCE) { 
         enemy.isStopping = true;
         enemy.stopTime = enemy.maxStopTime;
     }
